@@ -10,7 +10,16 @@
 <body class="container mt-4">
 
 <div class="row">
-  <div class="col-md-4">
+    <div class="col-md-3">
+        <div class="card">
+        <div class="card-body">
+            <h5>Inicio</h5>
+            <a href="index.php" class="btn btn-primary">Ver</a>
+        </div>
+        </div>
+    </div>
+
+  <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h5>Presentación</h5>
@@ -18,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h5>Transformador</h5>
@@ -26,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h5>Test</h5>

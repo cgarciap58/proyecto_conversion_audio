@@ -37,27 +37,68 @@
 <hr>
 
 <?php
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $uploadDir = "uploads/";
     $outputDir = "converted/";
 
+    // Allowed extensions
+    $allowedExt = ["mp3", "wav", "ogg", "aac"];
+    $maxSize_MB = 20;
+    $maxSize = $maxSize_MB * 1024 * 1024; // De bytes a KB a MB
+
     $filename = basename($_FILES["audio"]["name"]);
     $tempPath = $_FILES["audio"]["tmp_name"];
+    $fileSize = $_FILES["audio"]["size"];
 
-    $inputPath = $uploadDir . $filename;
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+    // Validación de extensión del archivo
+    if (!in_array($ext, $allowedExt)) {
+        echo "<div class='alert alert-danger'>Formato no permitido. Solo MP3, AAC, OGG o WAV.</div>";
+        exit;
+    }
+
+    // Validación del tamaño del archivo
+    if ($fileSize > $maxSize) {
+        echo "<div class='alert alert-danger'>El archivo supera el límite de $maxSize_MB MB.</div>";
+        exit;
+    }
+
+    // Validación de tipo de archivo (contenido real del archivo)
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $tempPath);
+    finfo_close($finfo);
+
+    $allowedMime = [
+        "audio/mpeg",  // mp3
+        "audio/wav",   // wav
+        "audio/x-wav", // algunas variantes de wav
+        "audio/ogg",   // ogg
+        "audio/aac"    // aac
+    ];
+
+    if (!in_array($mime, $allowedMime)) {
+        echo "<div class='alert alert-danger'>El archivo no es un audio válido. Ricardo, deja de hacer tonterías.</div>";
+        exit;
+    }
+
+    // Se guarda el archivo subido con un nombre único
+    $uniqueInput = uniqid() . "." . $ext;
+    $inputPath = $uploadDir . $uniqueInput;
 
     move_uploaded_file($tempPath, $inputPath);
 
+    // Se genera nombre de salida
     $name = uniqid();
     $format = $_POST["format"];
     $outputFile = $outputDir . $name . "." . $format;
 
-    $command = "ffmpeg -i $inputPath $outputFile 2>&1";
-
+    // Se lanza ffmpeg
+    $command = "ffmpeg -i " . escapeshellarg($inputPath) . " " . escapeshellarg($outputFile) . " 2>&1";
     shell_exec($command);
 
+    // Output de resultado de la conversión
     if (file_exists($outputFile)) {
         echo "<div class='alert alert-success'>";
         echo "Archivo convertido correctamente.<br><br>";
@@ -67,7 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<div class='alert alert-danger'>Error en la conversión.</div>";
     }
 }
-
 ?>
 
 <?php include 'footer.php'; ?>

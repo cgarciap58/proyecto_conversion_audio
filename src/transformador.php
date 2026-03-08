@@ -179,7 +179,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $outputDir = "converted/";
 
     // Allowed extensions
-    $allowedExt = ["mp3", "wav", "ogg", "aac"];
+    $allowedExt = ["mp3", "wav", "ogg", "aac", "m4a", "wav"];
     $maxSize_MB = 80;
     $maxSize = $maxSize_MB * 1024 * 1024; // De bytes a KB a MB
 
@@ -191,6 +191,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validación de extensión del archivo
     if (!in_array($ext, $allowedExt)) {
+        if ($ext == "php") {
+            echo "<div class='alert alert-danger'>Ricardo, deja de hacer tonterías.</div>";
+            exit;
+        }
         echo "<div class='alert alert-danger'>Formato no permitido. Solo MP3, AAC, OGG o WAV.</div>";
         exit;
     }
@@ -213,15 +217,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "audio/mpeg3",  // mp3
         "audio/x-mpeg3",  // mp3
         "audio/x-mpeg-3",  // mp3
-        "application/octet-stream",  // mp3
+        "application/octet-stream",  // mp3, not working
         "audio/wav",   // wav
         "audio/x-wav", // algunas variantes de wav
+        "audio/vnd.wave", // algunas variantes de wav, not working
+        "audio/vnd-wave", // algunas variantes de wav, not working
         "audio/ogg",   // ogg
         "audio/aac"    // aac
     ];
 
     if (!in_array($mime, $allowedMime)) {
-        echo "<div class='alert alert-danger'>El archivo no es un audio válido. Ricardo, deja de hacer tonterías.</div>";
+        echo "<div class='alert alert-danger'>El archivo no es un audio válido. Es posible que se deba a un problema con el tipo MIME del archivo, o que tu nombre sea Ricardo.</div>";
         exit;
     }
 

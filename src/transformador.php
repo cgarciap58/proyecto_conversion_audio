@@ -6,6 +6,8 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6: libreria de iconos. Nos da iconos de marcas (Spotify, Apple, YouTube) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
     :root {
@@ -128,29 +130,47 @@
 
 <?php include 'header.php'; ?>
     
+<div class="container mt-5 mb-5" style="max-width: 680px;">
 
-<h2>Transformador de Audio</h2>
+  <header class="text-center mb-5">
+    <h1 class="display-5 fw-bold" style="color: var(--azul-oscuro);">Transformador de Audio</h1>
+    <p style="color: var(--gris-suave);">Convierte tu archivo de audio al formato que necesites</p>
+  </header>
 
-<form method="POST" enctype="multipart/form-data">
-  <div class="mb-3">
-    <label class="form-label">Selecciona un archivo de audio</label>
-    <input type="file" name="audio" class="form-control" required>
+  <div class="tarjeta-custom p-4 mb-4">
+
+    <h2 class="titulo-seccion">
+      <i class="fa-solid fa-sliders me-2"></i>Configuración
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">
+          <i class="fa-solid fa-upload me-1" style="color:var(--azul-claro)"></i>Archivo de audio
+        </label>
+        <input type="file" name="audio" class="form-control" required>
+        <div class="form-text">Formatos aceptados: MP3, WAV, AAC, OGG. Tamaño máximo: 20 MB.</div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">
+          <i class="fa-solid fa-file-audio me-1" style="color:var(--azul-claro)"></i>Formato de salida
+        </label>
+        <select name="format" class="form-select">
+          <option value="mp3">MP3 — Universal, compatible con todo</option>
+          <option value="wav">WAV — Sin pérdida, máxima calidad</option>
+          <option value="aac">AAC — Mejor calidad que MP3 a igual tamaño</option>
+          <option value="ogg">OGG — Libre de patentes, código abierto</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" style="background:var(--azul-medio); border:none; padding: 0.6rem;">
+        <i class="fa-solid fa-rotate me-2"></i>Convertir
+      </button>
+
+    </form>
   </div>
-
-  <div class="mb-3">
-    <label class="form-label">Formato de salida</label>
-    <select name="format" class="form-select">
-      <option value="mp3">MP3</option>
-      <option value="wav">WAV</option>
-      <option value="aac">AAC</option>
-      <option value="ogg">OGG</option>
-    </select>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Convertir</button>
-</form>
-
-<hr>
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

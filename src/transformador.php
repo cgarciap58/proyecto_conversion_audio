@@ -23,6 +23,13 @@ echo "Hola Mundo";
 // 3. transformador.php - Página con transformador de audio
 // 4. test.php - Página con formulario a modo de test, incluyendo preguntas sobre lo presentado y el uso del transformador
 
+$input = "mercadona_mp3.mp3";
+$output = "mercadona_wav.wav";
+
+$command = "ffmpeg -i {$input} {$output}";
+
+shell_exec($command);
+
 ?>
 
 <?php include 'footer.php'; ?>

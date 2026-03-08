@@ -2,6 +2,9 @@ DROP DATABASE IF EXISTS lamp_db;
 CREATE DATABASE lamp_db CHARSET=utf8mb4;
 USE lamp_db;
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 CREATE TABLE users (
   id int(11) NOT NULL auto_increment,
   name varchar(100) NOT NULL,
@@ -36,16 +39,20 @@ CREATE TABLE test_questions (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- B, A, C, C, D, B, D C, C, A, 0.06, 
 INSERT INTO test_questions (question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text) VALUES
-('¿Que formato guarda el audio sin compresion y suele ocupar mas espacio?', 'multiple_choice', 'AAC', 'WAV', 'MP3', 'OGG', 'B', NULL),
+('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'multiple_choice', 'AAC', 'WAV', 'MP3', 'OGG', 'B', NULL),
 ('Si buscas buena compatibilidad con tamaño reducido, ¿que formato es habitual?', 'multiple_choice', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin perdida', 'A', NULL),
 ('¿Qué formato usa Spotify en Android y PC?', 'multiple_choice', 'MP3', 'AAC', 'OGG Vorbis', 'WAV', 'C', NULL),
-('¿Cuánto ocupa en MB, aproximadamente, el archivo mercadona.wav despues de convertirlo con la herramienta?', 'open_text', NULL, NULL, NULL, NULL, NULL, '0.06'),
 ('¿Cuál es la principal ventaja del AAC frente al MP3?', 'multiple_choice', 'Es más antiguo y compatible', 'No tiene patentes', 'Mejor calidad a igual tamaño de archivo', 'Solo funciona en Apple', 'C', NULL),
 ('¿Qué significa que un formato tiene compresión con pérdida?', 'multiple_choice', 'Que el archivo se puede recuperar completamente', 'Que usa el mismo algoritmo que ZIP', 'Que solo funciona en streaming', 'Que elimina partes del sonido de forma irreversible', 'D', NULL),
 ('¿En qué se basa el enmascaramiento temporal?', 'multiple_choice', 'En que el oído no percibe frecuencias por encima de 20.000 Hz', 'En que tras un sonido fuerte el oído tarda en recuperarse y no percibe sonidos suaves', 'En que dos sonidos a la vez se anulan', 'En que el cerebro ignora sonidos graves', 'B', NULL),
 ('¿En qué año se creó el formato OGG?', 'multiple_choice', '1991', '1993', '1997', '2000', 'D', NULL),
-('¿Por qué los servicios de streaming no usan WAV?', 'multiple_choice', 'Porque WAV no es compatible con móviles', 'Porque WAV tiene patentes muy caras', 'Porque WAV ocupa 10 veces más que un MP3 y dispararía el coste de red', 'Porque WAV no admite estéreo', 'C', NULL);
+('¿Por qué los servicios de streaming no usan WAV?', 'multiple_choice', 'Porque WAV no es compatible con móviles', 'Porque WAV tiene patentes muy caras', 'Porque WAV ocupa 10 veces más que un MP3 y dispararía el coste de red', 'Porque WAV no admite estéreo', 'C', NULL),
+('¿Con qué concepto de videojuegos se puede comparar la frecuencia de muestreo en audio?', 'multiple_choice', 'La resolución de la pantalla', 'La memoria VRAM de la tarjeta gráfica', 'Los FPS', 'La tasa de refresco del monitor en ms', 'C', NULL),
+('Si tuvieras que optimizar el tamaño del juego sin perder calidad perceptible, ¿qué profundidad de bits usarías para cada caso?', 'multiple_choice', 'Sonidos del menú: 8-bit | Banda sonora: 24-bit', 'Sonidos del menú: 24-bit | Banda sonora: 8-bit', 'Sonidos del menú: 16-bit | Banda sonora: 16-bit', 'Sonidos del menú: 8-bit | Banda sonora: 8-bit', 'A', NULL),
+('¿Cuánto ocupa en MB, aproximadamente, el archivo mercadona.wav después de convertirlo con la herramienta?', 'open_text', NULL, NULL, NULL, NULL, NULL, '0.06');
+
 
 CREATE TABLE test_attempts (
   id INT NOT NULL AUTO_INCREMENT,

@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS lamp_db;
-CREATE DATABASE lamp_db CHARSET utf8mb4;
+CREATE DATABASE lamp_db CHARSET=utf8mb4;
 USE lamp_db;
 
 CREATE TABLE users (
@@ -8,7 +8,7 @@ CREATE TABLE users (
   age int(3) NOT NULL,
   email varchar(100) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE app_settings (
   id INT NOT NULL AUTO_INCREMENT,

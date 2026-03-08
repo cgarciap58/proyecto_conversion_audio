@@ -79,31 +79,6 @@ function isTestEnabled(?mysqli $mysqli): bool
 /**
  * Arregla que los caracteres especiales se muestren mal en la base de datos
  */
-function normalizePotentialMojibake(string $text): string
-{
-    if ($text === '') {
-        return $text;
-    }
-
-    if (!preg_match('/(?:Ã.|Â.)/u', $text)) {
-        return $text;
-    }
-
-    if (function_exists('mb_convert_encoding')) {
-        $normalized = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
-
-        return is_string($normalized) ? $normalized : $text;
-    }
-
-    if (!function_exists('iconv')) {
-        return $text;
-    }
-
-    $normalized = iconv('ISO-8859-1', 'UTF-8//IGNORE', $text);
-
-    return is_string($normalized) ? $normalized : $text;
-}
-
 function toLowerUtf8Safe(string $text): string
 {
     if (function_exists('mb_strtolower')) {

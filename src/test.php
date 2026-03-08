@@ -24,7 +24,6 @@ $firstPerfect = null;
 
 function normalizeAnswer(string $value): string
 {
-    $value = normalizePotentialMojibake($value);
     $value = trim($value);
     $value = toLowerUtf8Safe($value);
     $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
@@ -50,7 +49,6 @@ function hasTableColumn(mysqli $mysqli, string $table, string $column): bool
 
 function parseNumericMbValue(string $raw): ?float
 {
-    $value = normalizePotentialMojibake($raw);
     $value = trim($value);
 
     if ($value === '') {
@@ -137,10 +135,6 @@ if ($mysqli) {
     $result = $mysqli->query('SELECT ' . implode(', ', $selectColumns) . ' FROM test_questions ORDER BY id ASC');
     if ($result) {
         while ($row = $result->fetch_assoc()) {
-            $row['question_text'] = normalizePotentialMojibake((string) ($row['question_text'] ?? ''));
-            foreach (['option_a', 'option_b', 'option_c', 'option_d'] as $optionField) {
-                $row[$optionField] = normalizePotentialMojibake((string) ($row[$optionField] ?? ''));
-            }
             $questions[] = $row;
         }
     } else {

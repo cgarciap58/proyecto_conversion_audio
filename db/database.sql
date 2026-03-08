@@ -39,7 +39,7 @@ CREATE TABLE test_questions (
 INSERT INTO test_questions (question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text) VALUES
 ('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'multiple_choice', 'AAC', 'WAV', 'MP3', 'OGG', 'B', NULL),
 ('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'multiple_choice', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A', NULL),
-('How much does mercadona.wave weight when transformed to mp3?', 'open_text', NULL, NULL, NULL, NULL, NULL, 'It weighs less than the original WAV file.');
+('¿Cuánto pesa mercadona.wav una vez transformado a mp3?', 'open_text', NULL, NULL, NULL, NULL, NULL, '30MB');
 
 CREATE TABLE test_attempts (
   id INT NOT NULL AUTO_INCREMENT,

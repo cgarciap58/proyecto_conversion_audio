@@ -25,7 +25,10 @@ $firstPerfect = null;
 function normalizeAnswer(string $value): string
 {
     $value = normalizePotentialMojibake($value);
-    $value = mb_strtolower(trim($value), 'UTF-8');
+    $value = trim($value);
+    $value = function_exists('mb_strtolower')
+        ? mb_strtolower($value, 'UTF-8')
+        : strtolower($value);
     $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
 
     return $value;
@@ -40,7 +43,8 @@ if (!$mysqli) {
 
 
 if ($mysqli) {
-    $result = $mysqli->query('SELECT id, question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text FROM test_questions ORDER BY id ASC');    if ($result) {
+    $result = $mysqli->query('SELECT id, question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text FROM test_questions ORDER BY id ASC');
+    if ($result) {
         while ($row = $result->fetch_assoc()) {
             $row['question_text'] = normalizePotentialMojibake((string) ($row['question_text'] ?? ''));
             foreach (['option_a', 'option_b', 'option_c', 'option_d'] as $optionField) {
@@ -48,6 +52,8 @@ if ($mysqli) {
             }
             $questions[] = $row;
         }
+    } else {
+        $dbError = 'Error al cargar las preguntas del test.';
     }
 
     if ($testEnabled && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {

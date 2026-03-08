@@ -89,6 +89,11 @@ function normalizePotentialMojibake(string $text): string
         return $text;
     }
 
+    if (!function_exists('mb_convert_encoding')) {
+        return $text;
+    }
+
+
     $normalized = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
 
     return is_string($normalized) ? $normalized : $text;

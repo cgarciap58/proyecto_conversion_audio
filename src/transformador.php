@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Allowed extensions
     $allowedExt = ["mp3", "wav", "ogg", "aac"];
-    $maxSize_MB = 20;
+    $maxSize_MB = 40;
     $maxSize = $maxSize_MB * 1024 * 1024; // De bytes a KB a MB
 
     $filename = basename($_FILES["audio"]["name"]);
@@ -201,23 +201,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Validación de tipo de archivo (contenido real del archivo)
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime = finfo_file($finfo, $tempPath);
-    finfo_close($finfo);
+    // // Validación de tipo de archivo (contenido real del archivo)
+    // $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    // $mime = finfo_file($finfo, $tempPath);
+    // finfo_close($finfo);
 
-    $allowedMime = [
-        "audio/mpeg",  // mp3
-        "audio/wav",   // wav
-        "audio/x-wav", // algunas variantes de wav
-        "audio/ogg",   // ogg
-        "audio/aac"    // aac
-    ];
+    // $allowedMime = [
+    //     "audio/mpeg",  // mp3
+    //     "audio/wav",   // wav
+    //     "audio/x-wav", // algunas variantes de wav
+    //     "audio/ogg",   // ogg
+    //     "audio/aac"    // aac
+    // ];
 
-    if (!in_array($mime, $allowedMime)) {
-        echo "<div class='alert alert-danger'>El archivo no es un audio válido. Ricardo, deja de hacer tonterías.</div>";
-        exit;
-    }
+    // if (!in_array($mime, $allowedMime)) {
+    //     echo "<div class='alert alert-danger'>El archivo no es un audio válido. Ricardo, deja de hacer tonterías.</div>";
+    //     exit;
+    // }
 
     // Se guarda el archivo subido con un nombre único
     $uniqueInput = uniqid() . "." . $ext;

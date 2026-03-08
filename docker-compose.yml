@@ -5,8 +5,18 @@ services:
     build: ./apache
     ports: 
       - 80:80
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - TEST_ADMIN_PIN=${TEST_ADMIN_PIN:-1234}
+      
     volumes:
       - ./src:/var/www/html
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8.0

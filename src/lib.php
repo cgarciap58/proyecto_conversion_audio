@@ -4,30 +4,55 @@ declare(strict_types=1);
 
 function connectDatabase(): ?mysqli
 {
-    $database = getenv('MYSQL_DATABASE') ?: 'lamp_db';
-    $username = getenv('MYSQL_USER') ?: 'lamp_user';
-    $password = getenv('MYSQL_PASSWORD') ?: 'lamp_password';
+    $databaseCandidates = array_values(array_unique(array_filter([
+        getenv('MYSQL_DATABASE') ?: null,
+        getenv('DB_NAME') ?: null,
+        'lamp_db',
+    ])));
 
-    $candidates = [
+    $usernameCandidates = array_values(array_unique(array_filter([
+        getenv('MYSQL_USER') ?: null,
+        getenv('DB_USER') ?: null,
+        'lamp_user',
+        'root',
+    ])));
+
+    $passwordCandidates = array_values(array_unique(array_filter([
+        getenv('MYSQL_PASSWORD') ?: null,
+        getenv('DB_PASSWORD') ?: null,
+        getenv('MYSQL_ROOT_PASSWORD') ?: null,
+        'lamp_password',
+        '1234',
+        '',
+    ], static fn ($value): bool => $value !== null)));
+
+    $hosts = [
         ['host' => getenv('DB_HOST') ?: 'mysql', 'port' => (int) (getenv('DB_PORT') ?: 3306)],
         ['host' => '127.0.0.1', 'port' => 13306],
         ['host' => 'localhost', 'port' => 13306],
         ['host' => '127.0.0.1', 'port' => 3306],
     ];
 
-    foreach ($candidates as $candidate) {
-        mysqli_report(MYSQLI_REPORT_OFF);
-        $mysqli = @new mysqli(
-            $candidate['host'],
-            $username,
-            $password,
-            $database,
-            $candidate['port']
-        );
+    mysqli_report(MYSQLI_REPORT_OFF);
 
-        if (!$mysqli->connect_errno) {
-            $mysqli->set_charset('utf8mb4');
-            return $mysqli;
+    foreach ($hosts as $candidateHost) {
+        foreach ($databaseCandidates as $database) {
+            foreach ($usernameCandidates as $username) {
+                foreach ($passwordCandidates as $password) {
+                    $mysqli = @new mysqli(
+                        $candidateHost['host'],
+                        $username,
+                        $password,
+                        $database,
+                        $candidateHost['port']
+                    );
+
+                    if (!$mysqli->connect_errno) {
+                        $mysqli->set_charset('utf8mb4');
+                        return $mysqli;
+                    }
+                }
+            }
         }
     }
 

@@ -6,11 +6,11 @@ Este proyecto está diseñado para acompañar una presentación oral sobre los f
 
 1. `presentacion.php`: explicación teórica.
 2. `transformador.php`: práctica de conversión de archivos de audio.
-3. `test.php`: evaluación final (permanece bloqueada hasta que el profesor la habilite).
+3. `test.php`: evaluación final (permanece bloqueada hasta que Felipe o César la habilite).
 
 ## Funcionalidades del test
 
-- El profesor habilita el test desde `presentacion.php` con un PIN (`TEST_ADMIN_PIN`, por defecto `1234`).
+- César o Felipe habilitan el test desde `activar_test.php` con un PIN (`TEST_ADMIN_PIN`, por defecto `1234`).
 - Mientras esté bloqueado:
   - en el menú aparece como "Bloqueado"
   - `test.php` muestra aviso y no deja responder.

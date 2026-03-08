@@ -1,3 +1,23 @@
+<?php
+if (isset($_GET['download_example'])) {
+    $samplePath = dirname(__DIR__) . '/ejemplo.wav';
+
+    if (!file_exists($samplePath)) {
+        http_response_code(404);
+        echo 'No se ha encontrado el archivo de ejemplo.';
+        exit;
+    }
+
+    header('Content-Description: File Transfer');
+    header('Content-Type: audio/wav');
+    header('Content-Disposition: attachment; filename="ejemplo.wav"');
+    header('Content-Length: ' . filesize($samplePath));
+
+    readfile($samplePath);
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -151,6 +171,9 @@
         </label>
         <input type="file" name="audio" class="form-control" required>
         <div class="form-text">Formatos aceptados: MP3, WAV, AAC, OGG. Tamaño máximo: 20 MB.</div>
+        <a href="?download_example=1" class="btn btn-outline-primary mt-3">
+          <i class="fa-solid fa-download me-1"></i>Descargar ejemplo.wav
+        </a>
       </div>
 
       <div class="mb-4">
@@ -225,8 +248,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "audio/ogg",   // ogg
         "audio/aac"    // aac
     ];
+    $mime = strtolower(trim($mime));
+    $isGenericAudio = strpos($mime, "audio/") === 0;
 
-    if (!in_array($mime, $allowedMime)) {
+    if (!in_array($mime, $allowedMime) && !$isGenericAudio) {
         echo "<div class='alert alert-danger'>El archivo no es un audio válido. Es posible que se deba a un problema con el tipo MIME del archivo, o que tu nombre sea Ricardo.</div>";
         exit;
     }

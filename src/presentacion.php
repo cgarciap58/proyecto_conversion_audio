@@ -108,7 +108,6 @@
     .icono-spotify     { color: #1DB954; }
     .icono-youtube     { color: #FF0000; }
     .icono-apple       { color: #555555; }
-    .icono-tidal       { color: var(--azul-oscuro); }
 
     .caja-conclusion {
       background-color: var(--azul-oscuro);

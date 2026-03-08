@@ -89,12 +89,26 @@ function normalizePotentialMojibake(string $text): string
         return $text;
     }
 
-    if (!function_exists('mb_convert_encoding')) {
+    if (function_exists('mb_convert_encoding')) {
+        $normalized = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
+
+        return is_string($normalized) ? $normalized : $text;
+    }
+
+    if (!function_exists('iconv')) {
         return $text;
     }
 
-
-    $normalized = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
+    $normalized = iconv('ISO-8859-1', 'UTF-8//IGNORE', $text);
 
     return is_string($normalized) ? $normalized : $text;
+}
+
+function toLowerUtf8Safe(string $text): string
+{
+    if (function_exists('mb_strtolower')) {
+        return mb_strtolower($text, 'UTF-8');
+    }
+
+    return strtolower($text);
 }

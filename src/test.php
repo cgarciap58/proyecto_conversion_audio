@@ -26,9 +26,7 @@ function normalizeAnswer(string $value): string
 {
     $value = normalizePotentialMojibake($value);
     $value = trim($value);
-    $value = function_exists('mb_strtolower')
-        ? mb_strtolower($value, 'UTF-8')
-        : strtolower($value);
+    $value = toLowerUtf8Safe($value);
     $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
 
     return $value;

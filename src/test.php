@@ -10,6 +10,8 @@
 
 <body class="container">
     
+<?php include 'header.php'; ?>
+
 <?php
 
 echo "Hola Mundo";
@@ -23,6 +25,6 @@ echo "Hola Mundo";
 
 ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php include 'footer.php'; ?>
 </body>
 </html>

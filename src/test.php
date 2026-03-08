@@ -34,6 +34,78 @@ function normalizeAnswer(string $value): string
     return $value;
 }
 
+function hasTableColumn(mysqli $mysqli, string $table, string $column): bool
+{
+    $table = $mysqli->real_escape_string($table);
+    $column = $mysqli->real_escape_string($column);
+    $result = $mysqli->query("SHOW COLUMNS FROM `{$table}` LIKE '{$column}'");
+
+    if (!$result) {
+        return false;
+    }
+
+    $exists = $result->num_rows > 0;
+    $result->close();
+
+    return $exists;
+}
+
+function parseNumericMbValue(string $raw): ?float
+{
+    $value = normalizePotentialMojibake($raw);
+    $value = trim($value);
+
+    if ($value === '') {
+        return null;
+    }
+
+    $value = preg_replace('/\bmb\b/ui', '', $value) ?? $value;
+    $value = str_replace(',', '.', $value);
+    $value = preg_replace('/[^\d\.-]+/u', '', $value) ?? $value;
+
+    if ($value === '' || !is_numeric($value)) {
+        return null;
+    }
+
+    return (float) $value;
+}
+
+function isNumericOpenQuestion(array $question): bool
+{
+    if (isset($question['expected_value']) && $question['expected_value'] !== null && trim((string) $question['expected_value']) !== '') {
+        return true;
+    }
+
+    return parseNumericMbValue((string) ($question['correct_text'] ?? '')) !== null;
+}
+
+function isOpenTextAnswerCorrect(array $question, string $answer): bool
+{
+    if (!isNumericOpenQuestion($question)) {
+        return normalizeAnswer($answer) !== ''
+            && normalizeAnswer($answer) === normalizeAnswer((string) ($question['correct_text'] ?? ''));
+    }
+
+    $studentValue = parseNumericMbValue($answer);
+
+    $expectedRaw = isset($question['expected_value']) && trim((string) $question['expected_value']) !== ''
+        ? (string) $question['expected_value']
+        : (string) ($question['correct_text'] ?? '');
+    $expectedValue = parseNumericMbValue($expectedRaw);
+
+    if ($studentValue === null || $expectedValue === null) {
+        return false;
+    }
+
+    $toleranceRaw = isset($question['tolerance']) && trim((string) $question['tolerance']) !== ''
+        ? (string) $question['tolerance']
+        : '0.02';
+    $tolerance = parseNumericMbValue($toleranceRaw) ?? 0.02;
+
+    return abs($studentValue - $expectedValue) <= $tolerance;
+}
+
+
 $mysqli = connectDatabase();
 $testEnabled = isTestEnabled($mysqli);
 
@@ -43,7 +115,28 @@ if (!$mysqli) {
 
 
 if ($mysqli) {
-    $result = $mysqli->query('SELECT id, question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text FROM test_questions ORDER BY id ASC');
+
+    $optionalColumns = [];
+    foreach (['expected_value', 'tolerance', 'unit'] as $column) {
+        if (hasTableColumn($mysqli, 'test_questions', $column)) {
+            $optionalColumns[] = $column;
+        }
+    }
+
+    $selectColumns = [
+        'id',
+        'question_text',
+        'question_type',
+        'option_a',
+        'option_b',
+        'option_c',
+        'option_d',
+        'correct_option',
+        'correct_text',
+    ];
+    $selectColumns = array_merge($selectColumns, $optionalColumns);
+
+    $result = $mysqli->query('SELECT ' . implode(', ', $selectColumns) . ' FROM test_questions ORDER BY id ASC');
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $row['question_text'] = normalizePotentialMojibake((string) ($row['question_text'] ?? ''));
@@ -71,8 +164,8 @@ if ($mysqli) {
                 $answer = trim((string) ($_POST[$fieldName] ?? ''));
 
                 if ($question['question_type'] === 'open_text') {
-                    if (normalizeAnswer($answer) !== '' && normalizeAnswer($answer) === normalizeAnswer($question['correct_text'])) {
-                        $correct++;
+                    if (isOpenTextAnswerCorrect($question, $answer)) {
+                    $correct++;
                     }
                     continue;
                 }

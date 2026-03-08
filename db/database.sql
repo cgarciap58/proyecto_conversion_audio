@@ -51,7 +51,7 @@ INSERT INTO test_questions (question_text, question_type, option_a, option_b, op
 ('¿Por qué los servicios de streaming no usan WAV?', 'multiple_choice', 'Porque WAV no es compatible con móviles', 'Porque WAV tiene patentes muy caras', 'Porque WAV ocupa 10 veces más que un MP3 y dispararía el coste de red', 'Porque WAV no admite estéreo', 'C', NULL),
 ('¿Con qué concepto de videojuegos se puede comparar la frecuencia de muestreo en audio?', 'multiple_choice', 'La resolución de la pantalla', 'La memoria VRAM de la tarjeta gráfica', 'Los FPS', 'La tasa de refresco del monitor en ms', 'C', NULL),
 ('Si tuvieras que optimizar el tamaño del juego sin perder calidad perceptible, ¿qué profundidad de bits usarías para cada caso?', 'multiple_choice', 'Sonidos del menú: 8-bit | Banda sonora: 24-bit', 'Sonidos del menú: 24-bit | Banda sonora: 8-bit', 'Sonidos del menú: 16-bit | Banda sonora: 16-bit', 'Sonidos del menú: 8-bit | Banda sonora: 8-bit', 'A', NULL),
-('¿Cuánto ocupa en MB, aproximadamente, el archivo mercadona.wav después de convertirlo con la herramienta?', 'open_text', NULL, NULL, NULL, NULL, NULL, '0.06');
+('¿Cuánto ocupa en MB, aproximadamente, el archivo mercadona.wav después de convertirlo con la herramienta?', 'open_text', NULL, NULL, NULL, NULL, NULL, '0,06');
 
 
 CREATE TABLE test_attempts (

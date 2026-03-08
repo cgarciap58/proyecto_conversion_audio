@@ -36,7 +36,7 @@ CREATE TABLE test_questions (
 
 INSERT INTO test_questions (question_text, option_a, option_b, option_c, option_d, correct_option) VALUES
 ('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'AAC', 'WAV', 'MP3', 'OGG', 'B'),
-('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A'),
+('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A');
 
 CREATE TABLE test_attempts (
   id INT NOT NULL AUTO_INCREMENT,

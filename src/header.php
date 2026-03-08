@@ -9,14 +9,30 @@
 
 <body class="container mt-4">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="index.php">Audio Project</a>
-    
-    <div>
-      <a class="nav-link d-inline" href="presentacion.php">Presentación</a>
-      <a class="nav-link d-inline" href="transformador.php">Transformador</a>
-      <a class="nav-link d-inline" href="test.php">Test</a>
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Presentación</h5>
+        <a href="presentacion.php" class="btn btn-primary">Ver</a>
+      </div>
     </div>
   </div>
-</nav>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Transformador</h5>
+        <a href="transformador.php" class="btn btn-primary">Ver</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Test</h5>
+        <a href="test.php" class="btn btn-primary">Ver</a>
+      </div>
+    </div>
+  </div>
+</div>
+

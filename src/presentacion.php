@@ -151,7 +151,7 @@
 
   <header class="text-center mb-5">
     <h1 class="display-4 fw-bold" style="color: var(--azul-oscuro);">Presentación Formatos de Audio</h1>
-    <h4><strong>Cesar García y Felipe Manosalva</strong></p></h4>
+    <h4><strong>César García y Felipe Manosalva</strong></p></h4>
     <div class="d-flex justify-content-center gap-3 mt-3">
       <span class="badge bg-secondary">ASIR 2</span>
       <span class="badge" style="background:var(--azul-medio)">Servicios de Red e Internet</span>

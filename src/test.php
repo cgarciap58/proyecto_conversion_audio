@@ -15,53 +15,19 @@
 <h2 class="mt-4">Test de conversión</h2>
 
 <?php
-$quizQuestion = null;
-$dbError = null;
-$feedback = null;
 require_once __DIR__ . '/lib.php';
-include 'header.php';
 
-$mysqli = connectDatabase();
-$testEnabled = isTestEnabled($mysqli);
 $dbError = null;
 $questions = [];
 $feedback = null;
 $firstPerfect = null;
-$teacherMessage = null;
-$teacherError = null;
-$teacherMode = isset($_GET['modo']) && $_GET['modo'] === 'profesor';
-$adminPin = getenv('TEST_ADMIN_PIN') ?: '1234';
 
+$mysqli = connectDatabase();
+$testEnabled = isTestEnabled($mysqli);
 
 if (!$mysqli) {
     $dbError = 'No se pudo conectar a la base de datos para cargar la pregunta.';
 
-    if ($mysqli && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['teacher_unlock'])) {
-    $providedPin = trim($_POST['admin_pin'] ?? '');
-
-    if ($providedPin === '') {
-        $teacherError = 'Debes indicar el PIN de profesor.';
-    } elseif ($providedPin !== $adminPin) {
-        $teacherError = 'PIN de profesor incorrecto.';
-    } else {
-        $stmtUnlock = $mysqli->prepare(
-            "INSERT INTO app_settings (setting_key, setting_value)
-             VALUES ('test_enabled', '1')
-             ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = CURRENT_TIMESTAMP"
-        );
-
-        if ($stmtUnlock && $stmtUnlock->execute()) {
-            $teacherMessage = 'Test habilitado correctamente.';
-            $testEnabled = true;
-        } else {
-            $teacherError = 'No se pudo habilitar el test.';
-        }
-
-        if ($stmtUnlock) {
-            $stmtUnlock->close();
-        }
-    }
-}
 
 if ($mysqli && $testEnabled) {
     $result = $mysqli->query('SELECT id, question_text, option_a, option_b, option_c, option_d FROM test_questions ORDER BY id ASC');
@@ -71,7 +37,7 @@ if ($mysqli && $testEnabled) {
         }
     }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {
         $studentName = trim($_POST['student_name'] ?? '');
 
         if ($studentName === '') {
@@ -123,7 +89,7 @@ if ($mysqli && $testEnabled) {
         }
     }
 
-        $winnerQuery = $mysqli->query('SELECT student_name, created_at FROM test_attempts WHERE all_correct = 1 ORDER BY created_at ASC, id ASC LIMIT 1');
+    $winnerQuery = $mysqli->query('SELECT student_name, created_at FROM test_attempts WHERE all_correct = 1 ORDER BY created_at ASC, id ASC LIMIT 1');
     if ($winnerQuery) {
         $firstPerfect = $winnerQuery->fetch_assoc() ?: null;
     }
@@ -143,33 +109,6 @@ if ($mysqli) {
         El test está bloqueado por el profesor mientras se realiza la presentación.
     </div>
 
-    <?php if ($teacherMode): ?>
-        <div class="card mt-3">
-            <div class="card-body">
-                <h5 class="card-title">Modo profesor (privado)</h5>
-                <p class="text-muted">Introduce el PIN para habilitar el test ahora.</p>
-
-                <?php if ($teacherMessage): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($teacherMessage, ENT_QUOTES, 'UTF-8') ?></div>
-                <?php endif; ?>
-                <?php if ($teacherError): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($teacherError, ENT_QUOTES, 'UTF-8') ?></div>
-                <?php endif; ?>
-
-                <?php if (!$testEnabled): ?>
-                    <form method="POST" class="row g-2 align-items-end">
-                        <div class="col-md-4">
-                            <label for="admin_pin" class="form-label">PIN de profesor</label>
-                            <input id="admin_pin" name="admin_pin" type="password" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" name="teacher_unlock" value="1" class="btn btn-success">Habilitar test</button>
-                        </div>
-                    </form>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endif; ?>
 <?php elseif (empty($questions)): ?>
     <div class="alert alert-warning">No hay preguntas configuradas en la base de datos.</div>
 <?php else: ?>

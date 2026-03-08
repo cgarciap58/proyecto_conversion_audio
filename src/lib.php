@@ -50,3 +50,21 @@ function isTestEnabled(?mysqli $mysqli): bool
     $row = $result->fetch_assoc();
     return isset($row['setting_value']) && (int) $row['setting_value'] === 1;
 }
+
+/**
+ * Arregla que los caracteres especiales se muestren mal en la base de datos
+ */
+function normalizePotentialMojibake(string $text): string
+{
+    if ($text === '') {
+        return $text;
+    }
+
+    if (!preg_match('/(?:Ã.|Â.)/u', $text)) {
+        return $text;
+    }
+
+    $normalized = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
+
+    return is_string($normalized) ? $normalized : $text;
+}

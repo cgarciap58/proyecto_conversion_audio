@@ -34,6 +34,10 @@ if ($mysqli && $testEnabled) {
     $result = $mysqli->query('SELECT id, question_text, option_a, option_b, option_c, option_d FROM test_questions ORDER BY id ASC');
     if ($result) {
         while ($row = $result->fetch_assoc()) {
+            $row['question_text'] = normalizePotentialMojibake((string) ($row['question_text'] ?? ''));
+            foreach (['option_a', 'option_b', 'option_c', 'option_d'] as $optionField) {
+                $row[$optionField] = normalizePotentialMojibake((string) ($row[$optionField] ?? ''));
+            }
             $questions[] = $row;
         }
     }

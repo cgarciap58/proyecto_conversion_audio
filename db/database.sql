@@ -26,17 +26,20 @@ ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
 CREATE TABLE test_questions (
   id INT NOT NULL AUTO_INCREMENT,
   question_text VARCHAR(255) NOT NULL,
-  option_a VARCHAR(255) NOT NULL,
-  option_b VARCHAR(255) NOT NULL,
-  option_c VARCHAR(255) NOT NULL,
-  option_d VARCHAR(255) NOT NULL,
-  correct_option CHAR(1) NOT NULL,
+  question_type ENUM('multiple_choice', 'open_text') NOT NULL DEFAULT 'multiple_choice',
+  option_a VARCHAR(255) NULL,
+  option_b VARCHAR(255) NULL,
+  option_c VARCHAR(255) NULL,
+  option_d VARCHAR(255) NULL,
+  correct_option CHAR(1) NULL,
+  correct_text VARCHAR(255) NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO test_questions (question_text, option_a, option_b, option_c, option_d, correct_option) VALUES
-('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'AAC', 'WAV', 'MP3', 'OGG', 'B'),
-('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A');
+INSERT INTO test_questions (question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text) VALUES
+('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'multiple_choice', 'AAC', 'WAV', 'MP3', 'OGG', 'B', NULL),
+('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'multiple_choice', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A', NULL),
+('How much does mercadona.wave weight when transformed to mp3?', 'open_text', NULL, NULL, NULL, NULL, NULL, 'It weighs less than the original WAV file.');
 
 CREATE TABLE test_attempts (
   id INT NOT NULL AUTO_INCREMENT,

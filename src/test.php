@@ -22,6 +22,15 @@ $questions = [];
 $feedback = null;
 $firstPerfect = null;
 
+function normalizeAnswer(string $value): string
+{
+    $value = normalizePotentialMojibake($value);
+    $value = mb_strtolower(trim($value), 'UTF-8');
+    $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
+
+    return $value;
+}
+
 $mysqli = connectDatabase();
 $testEnabled = isTestEnabled($mysqli);
 
@@ -30,9 +39,8 @@ if (!$mysqli) {
 }
 
 
-if ($mysqli && $testEnabled) {
-    $result = $mysqli->query('SELECT id, question_text, option_a, option_b, option_c, option_d FROM test_questions ORDER BY id ASC');
-    if ($result) {
+if ($mysqli) {
+    $result = $mysqli->query('SELECT id, question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text FROM test_questions ORDER BY id ASC');    if ($result) {
         while ($row = $result->fetch_assoc()) {
             $row['question_text'] = normalizePotentialMojibake((string) ($row['question_text'] ?? ''));
             foreach (['option_a', 'option_b', 'option_c', 'option_d'] as $optionField) {
@@ -42,8 +50,8 @@ if ($mysqli && $testEnabled) {
         }
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {
-        $studentName = trim($_POST['student_name'] ?? '');
+    if ($testEnabled && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {
+            $studentName = trim($_POST['student_name'] ?? '');
 
         if ($studentName === '') {
             $feedback = ['type' => 'error', 'message' => 'Debes indicar el nombre del estudiante.'];
@@ -54,25 +62,21 @@ if ($mysqli && $testEnabled) {
             $stmtCheck = $mysqli->prepare('SELECT correct_option FROM test_questions WHERE id = ? LIMIT 1');
             foreach ($questions as $question) {
                 $fieldName = 'q_' . $question['id'];
-                $answer = strtoupper(trim($_POST[$fieldName] ?? ''));
+                $answer = trim((string) ($_POST[$fieldName] ?? ''));
 
-                if (!$stmtCheck) {
+                if ($question['question_type'] === 'open_text') {
+                    if (normalizeAnswer($answer) !== '' && normalizeAnswer($answer) === normalizeAnswer($question['correct_text'])) {
+                        $correct++;
+                    }
                     continue;
                 }
 
-                $id = (int) $question['id'];
-                $stmtCheck->bind_param('i', $id);
-                $stmtCheck->execute();
-                $res = $stmtCheck->get_result();
-                $correctRow = $res ? $res->fetch_assoc() : null;
-                $expected = $correctRow ? strtoupper($correctRow['correct_option']) : '';
+                $answer = strtoupper($answer);
+                $expected = $question['correct_option'];
 
                 if ($answer === $expected) {
                     $correct++;
                 }
-            }
-            if ($stmtCheck) {
-                $stmtCheck->close();
             }
 
             $allCorrect = $correct === $total;
@@ -109,14 +113,17 @@ if ($mysqli) {
 
 <?php if ($dbError): ?>
     <div class="alert alert-danger"><?= htmlspecialchars($dbError, ENT_QUOTES, 'UTF-8') ?></div>
-<?php elseif (!$testEnabled): ?>
-    <div class="alert alert-info">
-        El test está bloqueado por el profesor mientras se realiza la presentación.
-    </div>
 
 <?php elseif (empty($questions)): ?>
     <div class="alert alert-warning">No hay preguntas configuradas en la base de datos.</div>
 <?php else: ?>
+
+    <?php if (!$testEnabled): ?>
+        <div class="alert alert-info">
+            El test está bloqueado por el profesor mientras se realiza la presentación. Se muestran las preguntas, pero no se puede enviar el formulario.
+        </div>
+    <?php endif; ?>
+
 
     <?php if ($firstPerfect): ?>
         <div class="alert alert-success">
@@ -138,27 +145,37 @@ if ($mysqli) {
     <form method="POST" class="mt-3">
         <div class="mb-3">
             <label for="student_name" class="form-label">Nombre del estudiante</label>
-            <input type="text" id="student_name" name="student_name" class="form-control" required>
+            <input type="text" id="student_name" name="student_name" class="form-control" required <?= $testEnabled ? '' : 'disabled' ?>>
         </div>
 
         <?php foreach ($questions as $index => $question): ?>
             <div class="card mb-3">
                 <div class="card-body">
                     <p class="mb-2"><strong><?= ($index + 1) ?>.</strong> <?= htmlspecialchars($question['question_text'], ENT_QUOTES, 'UTF-8') ?></p>
-                    <?php foreach (['a', 'b', 'c', 'd'] as $letter): ?>
-                        <?php $field = 'option_' . $letter; ?>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="q_<?= (int) $question['id'] ?>" id="q<?= (int) $question['id'] . $letter ?>" value="<?= strtoupper($letter) ?>" required>
-                            <label class="form-check-label" for="q<?= (int) $question['id'] . $letter ?>">
-                                <?= strtoupper($letter) ?>) <?= htmlspecialchars($question[$field], ENT_QUOTES, 'UTF-8') ?>
-                            </label>
-                        </div>
-                    <?php endforeach; ?>
+                    <?php if ($question['question_type'] === 'open_text'): ?>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="q_<?= (int) $question['id'] ?>"
+                            id="q<?= (int) $question['id'] ?>"
+                            required <?= $testEnabled ? '' : 'disabled' ?>
+                        >
+                    <?php else: ?>
+                        <?php foreach (['a', 'b', 'c', 'd'] as $letter): ?>
+                            <?php $field = 'option_' . $letter; ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q_<?= (int) $question['id'] ?>" id="q<?= (int) $question['id'] . $letter ?>" value="<?= strtoupper($letter) ?>" required <?= $testEnabled ? '' : 'disabled' ?>>
+                                <label class="form-check-label" for="q<?= (int) $question['id'] . $letter ?>">
+                                    <?= strtoupper($letter) ?>) <?= htmlspecialchars($question[$field], ENT_QUOTES, 'UTF-8') ?>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
 
-        <button type="submit" name="submit_quiz" value="1" class="btn btn-primary">Enviar respuestas</button>
+        <button type="submit" name="submit_quiz" value="1" class="btn btn-primary" <?= $testEnabled ? '' : 'disabled' ?>>Enviar respuestas</button>
     </form>
 <?php endif; ?>
 

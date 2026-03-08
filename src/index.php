@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container">
+    
 <?php
 
 echo "Hola Mundo";
@@ -10,3 +22,7 @@ echo "Hola Mundo";
 // 4. test.php - Página con formulario a modo de test, incluyendo preguntas sobre lo presentado y el uso del transformador
 
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

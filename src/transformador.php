@@ -12,23 +12,61 @@
 
 <?php include 'header.php'; ?>
     
+
+<h2>Transformador de Audio</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label class="form-label">Selecciona un archivo de audio</label>
+    <input type="file" name="audio" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Formato de salida</label>
+    <select name="format" class="form-select">
+      <option value="mp3">MP3</option>
+      <option value="wav">WAV</option>
+      <option value="aac">AAC</option>
+      <option value="ogg">OGG</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Convertir</button>
+</form>
+
+<hr>
+
 <?php
 
-echo "Hola Mundo";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-// Estructura para el trabajo
+    $uploadDir = "uploads/";
+    $outputDir = "converted/";
 
-// 1. index.php - Página HOME con nuestros nombres y una bienvenida
-// 2. presentación.php - Página con explicaciones sobre formatos de audio
-// 3. transformador.php - Página con transformador de audio
-// 4. test.php - Página con formulario a modo de test, incluyendo preguntas sobre lo presentado y el uso del transformador
+    $filename = basename($_FILES["audio"]["name"]);
+    $tempPath = $_FILES["audio"]["tmp_name"];
 
-$input = "mercadona_mp3.mp3";
-$output = "mercadona_wav.wav";
+    $inputPath = $uploadDir . $filename;
 
-$command = "ffmpeg -i {$input} {$output}";
+    move_uploaded_file($tempPath, $inputPath);
 
-shell_exec($command);
+    $name = uniqid();
+    $format = $_POST["format"];
+    $outputFile = $outputDir . $name . "." . $format;
+
+    $command = "ffmpeg -i $inputPath $outputFile 2>&1";
+
+    shell_exec($command);
+
+    if (file_exists($outputFile)) {
+        echo "<div class='alert alert-success'>";
+        echo "Archivo convertido correctamente.<br><br>";
+        echo "<a class='btn btn-success' href='$outputFile' download>Descargar archivo</a>";
+        echo "</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error en la conversión.</div>";
+    }
+}
 
 ?>
 

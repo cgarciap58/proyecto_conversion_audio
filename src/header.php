@@ -7,44 +7,39 @@ if ($mysqliHeader) {
 }
 ?>
 
-<div class="row mt-4">
-    <div class="col-md-3 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5>Inicio</h5>
-                <a href="index.php" class="btn btn-primary">Ver</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5>Presentación</h5>
-                <a href="presentacion.php" class="btn btn-primary">Ver</a>
-            </div>
-        </div>
-    </div>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color:#1e3a5f; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+  <div class="container">
+    <span class="navbar-brand fw-bold">
+      <i class="fa-solid fa-music me-2"></i>Formatos de Audio
+    </span>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto gap-2">
 
-      <div class="col-md-3 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5>Transformador</h5>
-                <a href="transformador.php" class="btn btn-primary">Ver</a>
-            </div>
-        </div>
-    </div>
+        <li class="nav-item">
+          <a href="presentacion.php" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-file-audio me-1"></i>Presentación
+          </a>
+        </li>
 
-    <div class="col-md-3 mb-3">
-        <div class="card h-100 <?= $testEnabled ? 'border-success' : 'border-secondary' ?>">
-            <div class="card-body">
-                <h5>Test</h5>
-                        <?php if ($testEnabled): ?>
-                            <a href="test.php" class="btn btn-success">Ver</a>
-                        <?php else: ?>
-                            <p class="text-muted small mb-2">Disponible al terminar la presentación.</p>
-                            <button class="btn btn-secondary" disabled>Bloqueado</button>
-                        <?php endif; ?>
-            </div>
-        </div>
+        <li class="nav-item">
+          <a href="transformador.php" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-sliders me-1"></i>Transformador
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <?php if ($testEnabled): ?>
+            <a href="test.php" class="btn btn-sm btn-success">
+              <i class="fa-solid fa-circle-check me-1"></i>Test
+            </a>
+          <?php else: ?>
+            <button class="btn btn-sm btn-secondary" disabled title="Disponible al terminar la presentación">
+              <i class="fa-solid fa-lock me-1"></i>Test
+            </button>
+          <?php endif; ?>
+        </li>
+
+      </ul>
     </div>
-</div>
+  </div>
+</nav>

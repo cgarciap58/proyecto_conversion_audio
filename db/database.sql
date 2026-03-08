@@ -37,9 +37,6 @@ CREATE TABLE test_questions (
 INSERT INTO test_questions (question_text, option_a, option_b, option_c, option_d, correct_option) VALUES
 ('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'AAC', 'WAV', 'MP3', 'OGG', 'B'),
 ('Si buscas buena compatibilidad con tamaño reducido, ¿qué formato es habitual?', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin pérdida', 'A'),
-('¿Qué página se usa para convertir los audios durante la práctica?', 'index.php', 'presentacion.php', 'transformador.php', 'test.php', 'C'),
-('En transformador.php, ¿qué acción debe hacer el estudiante antes de convertir?', 'Elegir un color de tema', 'Subir un archivo de audio válido', 'Crear una cuenta de administrador', 'Editar el código fuente', 'B'),
-('Tras convertir el archivo, ¿qué señal confirma que la conversión terminó correctamente?', 'Aparece un botón para descargar el archivo convertido', 'Se recarga la página sin mensajes', 'El navegador se cierra automáticamente', 'Se borra el archivo original del equipo', 'A');
 
 CREATE TABLE test_attempts (
   id INT NOT NULL AUTO_INCREMENT,

@@ -27,6 +27,7 @@ $testEnabled = isTestEnabled($mysqli);
 
 if (!$mysqli) {
     $dbError = 'No se pudo conectar a la base de datos para cargar la pregunta.';
+}
 
 
 if ($mysqli && $testEnabled) {

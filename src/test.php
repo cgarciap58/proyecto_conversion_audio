@@ -6,13 +6,51 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --azul-oscuro:  #1e3a5f;
+      --azul-medio:   #2563eb;
+      --azul-claro:   #3b82f6;
+      --fondo:        #f1f5f9;
+      --gris-texto:   #334155;
+      --gris-suave:   #64748b;
+      --blanco:       #ffffff;
+    }
+
+    body {
+      background-color: var(--fondo);
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      color: var(--gris-texto);
+      line-height: 1.6;
+    }
+
+    .tarjeta-custom {
+      background: var(--blanco);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
+    }
+
+    .tarjeta-custom .card-body {
+      padding: 1.4rem;
+    }
+  </style>
+
 </head>
 
 <body class="container">
     
 <?php include 'header.php'; ?>
 
-<h2 class="mt-4">Test de conversión</h2>
+<div class="container mt-5 mb-5" style="max-width: 760px;">
+
+  <header class="text-center mb-5">
+    <h1 class="display-5 fw-bold" style="color: var(--azul-oscuro);">Test de Formatos de Audio</h1>
+    <p style="color: var(--gris-suave);">Demuestra lo que has aprendido durante la presentación</p>
+  </header>
 
 <?php
 require_once __DIR__ . '/lib.php';
@@ -200,49 +238,55 @@ if ($mysqli) {
 }
 ?>
 
-<h2 class="mt-4">Test de teoría y práctica del conversor</h2>
-
 <?php if ($dbError): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($dbError, ENT_QUOTES, 'UTF-8') ?></div>
+    <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark me-2"></i><?= htmlspecialchars($dbError, ENT_QUOTES, 'UTF-8') ?></div>
 
 <?php elseif (empty($questions)): ?>
-    <div class="alert alert-warning">No hay preguntas configuradas en la base de datos.</div>
+    <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation me-2"></i>No hay preguntas configuradas en la base de datos.</div>
 <?php else: ?>
 
     <?php if (!$testEnabled): ?>
         <div class="alert alert-info">
-            El test está bloqueado por el profesor mientras se realiza la presentación. Se muestran las preguntas, pero no se puede enviar el formulario.
+            <i class="fa-solid fa-lock me-2"></i>El test está bloqueado por el profesor mientras se realiza la presentación. Se muestran las preguntas, pero no se puede enviar el formulario.
         </div>
     <?php endif; ?>
 
 
     <?php if ($firstPerfect): ?>
         <div class="alert alert-success">
-            <strong>Primer estudiante con puntuación perfecta:</strong>
+            <i class="fa-solid fa-trophy me-2"></i><strong>Primer estudiante con puntuación perfecta:</strong>
             <?= htmlspecialchars($firstPerfect['student_name'], ENT_QUOTES, 'UTF-8') ?>
             (<?= htmlspecialchars($firstPerfect['created_at'], ENT_QUOTES, 'UTF-8') ?>)
         </div>
     <?php else: ?>
-        <div class="alert alert-secondary">Aún no hay ningún estudiante con todas las respuestas correctas.</div>
+        <div class="alert alert-secondary"><i class="fa-solid fa-hourglass me-2"></i>Aún no hay ningún estudiante con todas las respuestas correctas.</div>
     <?php endif; ?>
 
     <?php if ($feedback): ?>
     
         <div class="alert alert-<?= $feedback['type'] === 'success' ? 'success' : ($feedback['type'] === 'warning' ? 'warning' : 'danger') ?>">
+            <i class="fa-solid fa-<?= $feedback['type'] === 'success' ? 'circle-check' : 'circle-exclamation' ?> me-2"></i>
             <?= htmlspecialchars($feedback['message'], ENT_QUOTES, 'UTF-8') ?>
         </div>
     <?php endif; ?>
 
     <form method="POST" class="mt-3">
-        <div class="mb-3">
-            <label for="student_name" class="form-label">Nombre del estudiante</label>
+        <div class="tarjeta-custom mb-4">
+          <div class="card-body">
+            <label for="student_name" class="form-label fw-semibold">
+              <i class="fa-solid fa-user me-1" style="color:var(--azul-claro)"></i>Nombre del estudiante
+            </label>
             <input type="text" id="student_name" name="student_name" class="form-control" required <?= $testEnabled ? '' : 'disabled' ?>>
+          </div>
         </div>
 
         <?php foreach ($questions as $index => $question): ?>
-            <div class="card mb-3">
+            <div class="tarjeta-custom">
                 <div class="card-body">
-                    <p class="mb-2"><strong><?= ($index + 1) ?>.</strong> <?= htmlspecialchars($question['question_text'], ENT_QUOTES, 'UTF-8') ?></p>
+                    <p class="mb-2 fw-semibold" style="color:var(--azul-oscuro)">
+                      <span style="color:var(--azul-medio)"><?= ($index + 1) ?>.</span>
+                      <?= htmlspecialchars($question['question_text'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
                     <?php if ($question['question_type'] === 'open_text'): ?>
                         <input
                             type="text"
@@ -266,9 +310,13 @@ if ($mysqli) {
             </div>
         <?php endforeach; ?>
 
-        <button type="submit" name="submit_quiz" value="1" class="btn btn-primary" <?= $testEnabled ? '' : 'disabled' ?>>Enviar respuestas</button>
+        <button type="submit" name="submit_quiz" value="1" class="btn w-100 mt-2" style="background:var(--azul-medio); color:white; border:none; padding:0.6rem;" <?= $testEnabled ? '' : 'disabled' ?>>
+          <i class="fa-solid fa-paper-plane me-2"></i>Enviar respuestas
+        </button>
     </form>
 <?php endif; ?>
+
+</div>
 
 <?php include 'footer.php'; ?>
 </body>

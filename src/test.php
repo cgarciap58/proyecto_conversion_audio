@@ -48,8 +48,8 @@
 <div class="container mt-5 mb-5" style="max-width: 760px;">
 
   <header class="text-center mb-5">
-    <h1 class="display-5 fw-bold" style="color: var(--azul-oscuro);">Test de Formatos de Audio</h1>
-    <p style="color: var(--gris-suave);">Demostrad lo que has aprendido durante la presentación</p>
+    <h1 class="display-5 fw-bold" style="color: var(--azul-oscuro);">Mini-test de Formatos de Audio</h1>
+    <p style="color: var(--gris-suave);">Demostrad lo que habéis aprendido durante la presentación</p>
   </header>
 
 <?php

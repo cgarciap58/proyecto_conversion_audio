@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 declare(strict_types=1);
 
@@ -100,4 +100,4 @@ function connectDatabase(): mysqli
 
     fwrite(STDERR, "No se pudo conectar a MySQL con ninguna configuración conocida.\n");
     exit(1);
-}
+} -->

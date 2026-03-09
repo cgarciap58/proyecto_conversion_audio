@@ -43,7 +43,7 @@ if ($mysqli) {
 ?>
 
 <h2 class="mt-4">Activar test</h2>
-<p class="text-muted">Introduce la contraseña/PIN del profesor para desbloquear el test para la clase.</p>
+<p class="text-muted">Introduce la contraseña para desbloquear el test para la clase.</p>
 
 <?php if ($feedback): ?>
   <div class="alert alert-<?= htmlspecialchars($feedback['type'], ENT_QUOTES, 'UTF-8') ?>">
@@ -53,7 +53,7 @@ if ($mysqli) {
 
 <form method="POST" class="mt-3" autocomplete="off">
   <div class="mb-3 col-md-4">
-    <label for="admin_pin" class="form-label">Contraseña/PIN del profesor</label>
+    <label for="admin_pin" class="form-label">Contraseña</label>
     <input id="admin_pin" name="admin_pin" type="password" class="form-control" required>
   </div>
 

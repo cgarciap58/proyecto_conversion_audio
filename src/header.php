@@ -30,11 +30,11 @@ if ($mysqliHeader) {
         <li class="nav-item">
           <?php if ($testEnabled): ?>
             <a href="test.php" class="btn btn-sm btn-success">
-              <i class="fa-solid fa-circle-check me-1"></i>Secreto
+              <i class="fa-solid fa-circle-check me-1"></i>Test
             </a>
           <?php else: ?>
             <button class="btn btn-sm btn-secondary" disabled title="Disponible al terminar la presentación">
-              <i class="fa-solid fa-lock me-1"></i>Test
+              <i class="fa-solid fa-lock me-1"></i> ???
             </button>
           <?php endif; ?>
         </li>

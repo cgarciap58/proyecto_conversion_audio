@@ -175,7 +175,7 @@
           <h4 style="color:var(--azul-medio)">
             <i class="fa-solid fa-wave-square me-2"></i>Frecuencia de muestreo
           </h4>
-          <p>Número de veces por segundo que el ordenador registra el sonido. Según el <strong>Teorema de Nyquist</strong>, para reconstruir un sonido hay que muestrear al menos al doble de la frecuencia máxima que queremos captar.</p>
+          <p>Número de veces por segundo que el ordenador registra el sonido. Según el <strong>Teorema de Nyquist-Shannon</strong>, para reconstruir un sonido hay que muestrear al menos al doble de la frecuencia máxima que queremos captar.</p>
           <ul class="list-unstyled mt-3">
             <li class="mb-1">
               <i class="fa-solid fa-check-circle me-2" style="color:var(--azul-claro)"></i>

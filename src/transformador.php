@@ -1,16 +1,18 @@
 <?php
 if (isset($_GET['download_example'])) {
-    $samplePath = dirname(__DIR__) . '/ejemplo.wav';
+    $samplePath = realpath(dirname(__DIR__) . '/ejemplo.mp3');
 
-    if (!file_exists($samplePath)) {
+    if ($samplePath === false || !is_file($samplePath) || !is_readable($samplePath)) {
         http_response_code(404);
         echo 'No se ha encontrado el archivo de ejemplo.';
         exit;
     }
 
     header('Content-Description: File Transfer');
-    header('Content-Type: audio/wav');
-    header('Content-Disposition: attachment; filename="ejemplo.wav"');
+    header('Content-Type: audio/mpeg');
+    header('Content-Disposition: attachment; filename="ejemplo.mp3"');
+    header('Content-Transfer-Encoding: binary');
+    header('Accept-Ranges: bytes');
     header('Content-Length: ' . filesize($samplePath));
 
     readfile($samplePath);
@@ -171,8 +173,8 @@ if (isset($_GET['download_example'])) {
         </label>
         <input type="file" name="audio" class="form-control" required>
         <div class="form-text">Formatos aceptados: MP3, WAV, AAC, OGG. Tamaño máximo: 20 MB.</div>
-        <a href="?download_example=1" class="btn btn-outline-primary mt-3">
-          <i class="fa-solid fa-download me-1"></i>Descargar ejemplo.wav
+        <a href="ejemplo.mp3" download="ejemplo.mp3" class="btn btn-outline-primary mt-3">
+          <i class="fa-solid fa-download me-1"></i> Descargar ejemplo.mp3
         </a>
       </div>
 

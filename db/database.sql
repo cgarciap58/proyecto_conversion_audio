@@ -39,7 +39,7 @@ CREATE TABLE test_questions (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- B, A, C, C, D, B, D C, C, A, 0.06, 
+-- B, A, C, C, D, B, D C, C, A, 26, 
 INSERT INTO test_questions (question_text, question_type, option_a, option_b, option_c, option_d, correct_option, correct_text) VALUES
 ('¿Qué formato guarda el audio sin compresión y suele ocupar más espacio?', 'multiple_choice', 'AAC', 'WAV', 'MP3', 'OGG', 'B', NULL),
 ('Si buscas buena compatibilidad con tamaño reducido, ¿que formato es habitual?', 'multiple_choice', 'MP3', 'WAV', 'PCM sin contenedor', 'FLAC sin perdida', 'A', NULL),
@@ -51,7 +51,7 @@ INSERT INTO test_questions (question_text, question_type, option_a, option_b, op
 ('¿Por qué los servicios de streaming no usan WAV?', 'multiple_choice', 'Porque WAV no es compatible con móviles', 'Porque WAV tiene patentes muy caras', 'Porque WAV ocupa 10 veces más que un MP3 y dispararía el coste de red', 'Porque WAV no admite estéreo', 'C', NULL),
 ('¿Con qué concepto de videojuegos se puede comparar la frecuencia de muestreo en audio?', 'multiple_choice', 'La resolución de la pantalla', 'La memoria VRAM de la tarjeta gráfica', 'Los FPS', 'La tasa de refresco del monitor en ms', 'C', NULL),
 ('Si tuvieras que optimizar el tamaño del juego sin perder calidad perceptible, ¿qué profundidad de bits usarías para cada caso?', 'multiple_choice', 'Sonidos del menú: 8-bit | Banda sonora: 24-bit', 'Sonidos del menú: 24-bit | Banda sonora: 8-bit', 'Sonidos del menú: 16-bit | Banda sonora: 16-bit', 'Sonidos del menú: 8-bit | Banda sonora: 8-bit', 'A', NULL),
-('¿Cuánto ocupa en MB, aproximadamente, el archivo mercadona.wav después de convertirlo con la herramienta?', 'open_text', NULL, NULL, NULL, NULL, NULL, '0,06');
+('¿Cuánto ocupa en KB, aproximadamente, el archivo ejemplo.mp3 después de convertirlo a OGG con la herramienta? (redondeando, sin decimales)', 'open_text', NULL, NULL, NULL, NULL, NULL, '26');
 
 
 CREATE TABLE test_attempts (

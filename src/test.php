@@ -49,7 +49,7 @@
 
   <header class="text-center mb-5">
     <h1 class="display-5 fw-bold" style="color: var(--azul-oscuro);">Test de Formatos de Audio</h1>
-    <p style="color: var(--gris-suave);">Demuestra lo que has aprendido durante la presentación</p>
+    <p style="color: var(--gris-suave);">Demostrad lo que has aprendido durante la presentación</p>
   </header>
 
 <?php
@@ -59,6 +59,8 @@ $dbError = null;
 $questions = [];
 $feedback = null;
 $firstPerfect = null;
+$submittedAnswers = [];
+$submittedStudentName = '';
 
 function normalizeAnswer(string $value): string
 {
@@ -180,7 +182,13 @@ if ($mysqli) {
     }
 
     if ($testEnabled && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_quiz']) && !empty($questions)) {
-            $studentName = trim($_POST['student_name'] ?? '');
+        $studentName = trim($_POST['student_name'] ?? '');
+        $submittedStudentName = $studentName;
+
+        foreach ($questions as $question) {
+            $fieldName = 'q_' . $question['id'];
+            $submittedAnswers[$fieldName] = trim((string) ($_POST[$fieldName] ?? ''));
+        }
 
         if ($studentName === '') {
             $feedback = ['type' => 'error', 'message' => 'Debes indicar el nombre del estudiante.'];
@@ -191,7 +199,7 @@ if ($mysqli) {
             $stmtCheck = $mysqli->prepare('SELECT correct_option FROM test_questions WHERE id = ? LIMIT 1');
             foreach ($questions as $question) {
                 $fieldName = 'q_' . $question['id'];
-                $answer = trim((string) ($_POST[$fieldName] ?? ''));
+                $answer = $submittedAnswers[$fieldName] ?? '';
 
                 if ($question['question_type'] === 'open_text') {
                     if (isOpenTextAnswerCorrect($question, $answer)) {
@@ -221,7 +229,7 @@ if ($mysqli) {
             $feedback = [
                 'type' => $allCorrect ? 'success' : 'warning',
                 'message' => $allCorrect
-                    ? "¡Perfecto, {$studentName}! Respondiste todo correctamente."
+                    ? "¡Perfecto, {$studentName}! Respondisteis todo correctamente."
                     : "{$studentName}, acertaste {$correct} de {$total} preguntas.",
             ];
         }
@@ -254,12 +262,12 @@ if ($mysqli) {
 
     <?php if ($firstPerfect): ?>
         <div class="alert alert-success">
-            <i class="fa-solid fa-trophy me-2"></i><strong>Primer estudiante con puntuación perfecta:</strong>
+            <i class="fa-solid fa-trophy me-2"></i><strong>Primer equipo con puntuación perfecta:</strong>
             <?= htmlspecialchars($firstPerfect['student_name'], ENT_QUOTES, 'UTF-8') ?>
             (<?= htmlspecialchars($firstPerfect['created_at'], ENT_QUOTES, 'UTF-8') ?>)
         </div>
     <?php else: ?>
-        <div class="alert alert-secondary"><i class="fa-solid fa-hourglass me-2"></i>Aún no hay ningún estudiante con todas las respuestas correctas.</div>
+        <div class="alert alert-secondary"><i class="fa-solid fa-hourglass me-2"></i>Aún no hay ningún equipo con todas las respuestas correctas.</div>
     <?php endif; ?>
 
     <?php if ($feedback): ?>
@@ -274,9 +282,16 @@ if ($mysqli) {
         <div class="tarjeta-custom mb-4">
           <div class="card-body">
             <label for="student_name" class="form-label fw-semibold">
-              <i class="fa-solid fa-user me-1" style="color:var(--azul-claro)"></i>Nombre del estudiante
+              <i class="fa-solid fa-user me-1" style="color:var(--azul-claro)"></i>Equipo
             </label>
-            <input type="text" id="student_name" name="student_name" class="form-control" required <?= $testEnabled ? '' : 'disabled' ?>>
+            <input
+                type="text"
+                id="student_name"
+                name="student_name"
+                class="form-control"
+                value="<?= htmlspecialchars($submittedStudentName, ENT_QUOTES, 'UTF-8') ?>"
+                required <?= $testEnabled ? '' : 'disabled' ?>
+            >
           </div>
         </div>
 
@@ -293,13 +308,15 @@ if ($mysqli) {
                             class="form-control"
                             name="q_<?= (int) $question['id'] ?>"
                             id="q<?= (int) $question['id'] ?>"
+                            value="<?= htmlspecialchars((string) ($submittedAnswers['q_' . (int) $question['id']] ?? ''), ENT_QUOTES, 'UTF-8') ?>"                            
                             required <?= $testEnabled ? '' : 'disabled' ?>
                         >
                     <?php else: ?>
                         <?php foreach (['a', 'b', 'c', 'd'] as $letter): ?>
                             <?php $field = 'option_' . $letter; ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q_<?= (int) $question['id'] ?>" id="q<?= (int) $question['id'] . $letter ?>" value="<?= strtoupper($letter) ?>" required <?= $testEnabled ? '' : 'disabled' ?>>
+                                <?php $currentValue = strtoupper((string) ($submittedAnswers['q_' . (int) $question['id']] ?? '')); ?>
+                                <input class="form-check-input" type="radio" name="q_<?= (int) $question['id'] ?>" id="q<?= (int) $question['id'] . $letter ?>" value="<?= strtoupper($letter) ?>" <?= $currentValue === strtoupper($letter) ? 'checked' : '' ?> required <?= $testEnabled ? '' : 'disabled' ?>>
                                 <label class="form-check-label" for="q<?= (int) $question['id'] . $letter ?>">
                                     <?= strtoupper($letter) ?>) <?= htmlspecialchars($question[$field], ENT_QUOTES, 'UTF-8') ?>
                                 </label>
